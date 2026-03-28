@@ -24,10 +24,7 @@
     (function () {
       try {
         var l = localStorage.getItem("portfolio-lang");
-        if (l === "ko") document.documentElement.lang = "ko";
-        else if (l === "en") document.documentElement.lang = "en";
-        else if (navigator.language && navigator.language.indexOf("ko") === 0) document.documentElement.lang = "ko";
-        else document.documentElement.lang = "en";
+        document.documentElement.lang = l === "ko" ? "ko" : "en";
       } catch (e) {}
     })();
   </script>
@@ -1019,10 +1016,9 @@
       function initialLang() {
         try {
           var s = localStorage.getItem("portfolio-lang");
-          if (s === "ko" || s === "en") return s;
+          if (s === "ko") return "ko";
+          if (s === "en") return "en";
         } catch (e) {}
-        var h = document.documentElement.lang;
-        if (h === "ko") return "ko";
         return "en";
       }
 
