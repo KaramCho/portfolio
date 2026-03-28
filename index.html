@@ -102,6 +102,17 @@
     html[lang="ko"] body {
       font-family: "Noto Sans KR", Inter, system-ui, sans-serif;
     }
+    body.pdf-generating header,
+    body.pdf-generating .theme-grid {
+      visibility: hidden !important;
+    }
+    body.pdf-generating .pdf-exclude {
+      display: none !important;
+    }
+    body.pdf-generating #nav-mobile-backdrop,
+    body.pdf-generating #nav-mobile-panel {
+      display: none !important;
+    }
     .sr-only {
       position: absolute;
       width: 1px;
@@ -117,62 +128,206 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       appearance: none;
+      box-sizing: border-box;
       min-width: 3.35rem;
-      padding: 0.4rem 2.5rem 0.4rem 0.75rem;
+      min-height: 2.5rem;
+      height: 2.5rem;
+      padding: 0 2.25rem 0 0.65rem;
+      line-height: 2.5rem;
       background-repeat: no-repeat;
-      background-position: right 0.85rem center;
+      background-position: right 0.65rem center;
       background-size: 11px 11px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
     }
     html.dark #lang-select {
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
     }
+    .header-nav-scroll {
+      -webkit-overflow-scrolling: touch;
+    }
+    @media (min-width: 1024px) {
+      .header-nav-desktop ul {
+        letter-spacing: 0.06em;
+      }
+    }
+    body.nav-mobile-open {
+      overflow: hidden;
+    }
+    @media print {
+      .theme-grid,
+      header,
+      .pdf-exclude,
+      #nav-mobile-backdrop,
+      #nav-mobile-panel {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      body {
+        background: #fff !important;
+        print-color-adjust: exact;
+        -webkit-print-color-adjust: exact;
+      }
+      main {
+        max-width: none !important;
+        padding: 1rem !important;
+      }
+    }
   </style>
 </head>
 <body class="min-h-screen bg-[var(--bg-page)] font-sans text-[var(--text-body)] antialiased transition-[background-color,color] duration-300 selection:bg-[var(--selection-bg)] selection:text-[var(--selection-text)]">
   <div class="theme-grid pointer-events-none fixed inset-0 opacity-40 [mask-image:radial-gradient(ellipse_70%_50%_at_50%_0%,#000_15%,transparent_65%)] dark:opacity-35" aria-hidden="true"></div>
 
-  <header class="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[var(--header-bg)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300">
-    <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-      <a href="#top" class="font-mono text-sm font-semibold text-[var(--accent)] transition hover:text-[var(--accent-hover)]">~/karam</a>
-      <div class="flex items-center gap-2 sm:gap-3">
-        <nav aria-label="Sections">
-          <ul class="flex max-w-[220px] flex-wrap justify-end gap-x-2 gap-y-1 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] sm:max-w-none sm:gap-x-4 sm:text-xs">
-            <li><a href="#profile" class="transition hover:text-[var(--accent)]" data-i18n="nav_profile">Profile</a></li>
-            <li><a href="#stores" class="transition hover:text-[var(--accent)]" data-i18n="nav_stores">Stores</a></li>
-            <li><a href="#work" class="transition hover:text-[var(--accent)]" data-i18n="nav_work">Work</a></li>
-            <li><a href="#tech" class="transition hover:text-[var(--accent)]" data-i18n="nav_tech">Tech</a></li>
-            <li><a href="#international" class="transition hover:text-[var(--accent)]" data-i18n="nav_global">Global</a></li>
-            <li><a href="#education" class="transition hover:text-[var(--accent)]" data-i18n="nav_edu">Edu</a></li>
-          </ul>
-        </nav>
-        <div class="flex shrink-0 items-center">
-          <label class="sr-only" for="lang-select" data-i18n="lang_label">Language</label>
-          <select
-            id="lang-select"
-            class="cursor-pointer rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] font-mono text-[11px] font-medium text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] dark:border-zinc-600/80"
-          >
-            <option value="en">EN</option>
-            <option value="ko">KO</option>
-          </select>
-        </div>
+  <header class="sticky top-0 z-[100] border-b border-[color:var(--border)] bg-[var(--header-bg)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300">
+    <!-- Mobile: logo | menu + lang + theme · lg+: logo | inline nav | lang + theme -->
+    <div
+      class="mx-auto grid max-w-3xl grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 px-4 py-2.5 sm:px-6 sm:py-3 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center lg:gap-x-6 lg:px-6 xl:gap-x-8"
+    >
+      <a
+        href="#top"
+        class="col-start-1 row-start-1 inline-flex min-h-10 items-center font-mono text-sm font-semibold leading-none text-[var(--accent)] transition hover:text-[var(--accent-hover)]"
+        >~/karam</a>
+
+      <div
+        class="col-start-2 row-start-1 flex min-h-10 shrink-0 flex-nowrap items-center justify-self-end gap-1.5 sm:gap-2 lg:col-start-3 lg:gap-2.5"
+      >
+        <button
+          type="button"
+          id="nav-menu-btn"
+          class="flex h-9 w-9 items-center justify-center rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] lg:hidden dark:border-zinc-600/80"
+          aria-expanded="false"
+          aria-controls="nav-mobile-panel"
+          aria-label="Open menu"
+        >
+          <span class="nav-icon-open flex flex-col gap-1" aria-hidden="true">
+            <span class="block h-0.5 w-4 rounded-full bg-current"></span>
+            <span class="block h-0.5 w-4 rounded-full bg-current"></span>
+            <span class="block h-0.5 w-4 rounded-full bg-current"></span>
+          </span>
+          <span class="nav-icon-close hidden text-lg leading-none" aria-hidden="true">×</span>
+        </button>
+        <label class="sr-only" for="lang-select" data-i18n="lang_label">Language</label>
+        <select
+          id="lang-select"
+          class="cursor-pointer rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] font-mono text-[10px] font-medium text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] dark:border-zinc-600/80 sm:text-[11px]"
+        >
+          <option value="en">EN</option>
+          <option value="ko">KO</option>
+        </select>
         <button
           type="button"
           id="theme-toggle"
-          class="group flex shrink-0 items-center gap-1.5 rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] px-3 py-1.5 font-mono text-[11px] font-medium text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:scale-[1.03] active:scale-[0.98] dark:border-zinc-600/80"
+          class="group flex h-10 min-h-10 shrink-0 items-center gap-1 rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] px-2.5 font-mono text-[10px] font-medium leading-none text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:scale-[1.03] active:scale-[0.98] dark:border-zinc-600/80 sm:gap-1.5 sm:px-3 sm:text-[11px]"
           data-i18n-aria="theme_aria"
           aria-label="Toggle color theme"
         >
           <span class="toggle-emoji inline-block text-base transition-transform duration-200 group-hover:rotate-12 dark:hidden" aria-hidden="true">🌙</span>
           <span class="toggle-emoji hidden text-base transition-transform duration-200 group-hover:rotate-12 dark:inline" aria-hidden="true">☀️</span>
-          <span class="hidden sm:inline"><span class="dark:hidden" data-i18n="theme_go_dark">dark</span><span class="hidden dark:inline" data-i18n="theme_go_light">light</span></span>
+          <span class="hidden min-[400px]:inline"><span class="dark:hidden" data-i18n="theme_go_dark">dark</span><span class="hidden dark:inline" data-i18n="theme_go_light">light</span></span>
         </button>
       </div>
+
+      <nav
+        class="header-nav-scroll header-nav-desktop hidden min-w-0 lg:col-start-2 lg:row-start-1 lg:flex lg:min-h-10 lg:items-center lg:justify-center lg:px-2"
+        data-nav-desktop
+        aria-label="Sections"
+      >
+        <ul
+          class="flex flex-nowrap items-center justify-center gap-x-4 overflow-x-auto overscroll-x-contain pb-0.5 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] [scrollbar-width:none] sm:gap-x-5 sm:text-xs lg:min-h-10 lg:gap-x-6 lg:pb-0 lg:pt-0 [&::-webkit-scrollbar]:hidden"
+        >
+          <li class="flex shrink-0 items-stretch">
+            <a href="#profile" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_profile">Profile</a>
+          </li>
+          <li class="flex shrink-0 items-stretch">
+            <a href="#stores" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_stores">Stores</a>
+          </li>
+          <li class="flex shrink-0 items-stretch">
+            <a href="#work" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_work">Work</a>
+          </li>
+          <li class="flex shrink-0 items-stretch">
+            <a href="#tech" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_tech">Tech</a>
+          </li>
+          <li class="flex shrink-0 items-stretch">
+            <a href="#international" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_global">Global</a>
+          </li>
+          <li class="flex shrink-0 items-stretch">
+            <a href="#education" class="inline-flex min-h-10 items-center whitespace-nowrap px-0.5 transition hover:text-[var(--accent)]" data-i18n="nav_edu">Edu</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </header>
 
+  <!-- Mobile full-width section menu (below header bar) -->
+  <div
+    id="nav-mobile-backdrop"
+    class="fixed inset-x-0 bottom-0 top-14 z-[90] hidden bg-zinc-950/55 backdrop-blur-[2px] dark:bg-black/65 lg:hidden"
+    aria-hidden="true"
+  ></div>
+  <div
+    id="nav-mobile-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="nav-mobile-title"
+    class="fixed inset-x-0 top-14 z-[95] hidden max-h-[min(75dvh,22rem)] overflow-y-auto overscroll-contain border-b border-[color:var(--border)] bg-[var(--bg-card-solid)] shadow-lg lg:hidden"
+  >
+    <p id="nav-mobile-title" class="sr-only" data-i18n="nav_menu_title">Sections</p>
+    <nav aria-label="Sections" data-nav-mobile>
+      <ul class="divide-y divide-[color:var(--border)] px-2 py-1 font-mono text-sm text-[var(--text-primary)]">
+        <li>
+          <a href="#profile" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_profile">Profile</a>
+        </li>
+        <li>
+          <a href="#stores" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_stores">Stores</a>
+        </li>
+        <li>
+          <a href="#work" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_work">Work</a>
+        </li>
+        <li>
+          <a href="#tech" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_tech">Tech</a>
+        </li>
+        <li>
+          <a href="#international" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_global">Global</a>
+        </li>
+        <li>
+          <a href="#education" class="nav-mobile-link block rounded-lg px-4 py-3.5 transition hover:bg-[var(--bg-nested)] active:bg-[var(--bg-nested)]" data-i18n="nav_edu">Edu</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
   <main id="top" class="relative mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
     <p class="mb-6 text-center font-mono text-[10px] text-[var(--text-faint)] opacity-80" data-i18n="meta_line">✨ portfolio v1 · tailwind + vanilla js</p>
+
+    <div
+      class="pdf-exclude mb-8 flex flex-wrap items-center justify-center gap-2 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3.5 shadow-[var(--shadow-card)] sm:px-5 sm:py-4"
+      role="region"
+      aria-label="PDF export"
+      data-i18n-aria="pdf_region_aria"
+    >
+      <div
+        class="flex flex-wrap justify-center gap-2"
+        role="group"
+        data-i18n-aria="pdf_group_aria"
+        aria-label="Download portfolio PDF"
+      >
+        <button
+          type="button"
+          id="pdf-dl-en"
+          class="cursor-pointer rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-wider text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-60 dark:border-zinc-600/80 sm:text-xs"
+          data-i18n="pdf_btn_en"
+        >
+          PDF · EN
+        </button>
+        <button
+          type="button"
+          id="pdf-dl-ko"
+          class="cursor-pointer rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-wider text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:cursor-wait disabled:opacity-60 dark:border-zinc-600/80 sm:text-xs"
+          data-i18n="pdf_btn_ko"
+        >
+          PDF · KO
+        </button>
+      </div>
+    </div>
 
     <section class="mb-16 grid gap-8 sm:grid-cols-[auto_1fr] sm:gap-10 sm:pt-4">
       <div class="relative shrink-0">
@@ -230,18 +385,18 @@
       <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_stores_label">02 — Stores</p>
       <h2 class="mb-1 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="stores_title">Shopify stores</h2>
       <p class="mb-5 text-sm text-[var(--text-muted)]" data-i18n="stores_sub">Stores I’ve built &amp; customized</p>
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <a href="https://www.innisfree.jp/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree JP <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://vn.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree VN <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://tw.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree TW <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://my.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree MY <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://thewhoo-usa.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">THE WHOO US <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://jp.aestura.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">AESTURA JP <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://kataseoul.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">KATA Seoul <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://tune.kr/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">TUNE KR <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://tenui.kr/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">Tenui <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://thisisneverthat.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">thisisneverthat <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
-        <a href="https://khakis2020.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">(K h a k i s) <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+      <div class="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3">
+        <a href="https://www.innisfree.jp/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">innisfree JP</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://vn.innisfree.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">innisfree VN</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://tw.innisfree.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">innisfree TW</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://my.innisfree.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">innisfree MY</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://thewhoo-usa.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">THE WHOO US</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://jp.aestura.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">AESTURA JP</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://kataseoul.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">KATA Seoul</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://tune.kr/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">TUNE KR</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://tenui.kr/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">Tenui</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://thisisneverthat.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">thisisneverthat</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
+        <a href="https://khakis2020.com/" target="_blank" rel="noopener noreferrer" class="store-link group flex min-h-[3rem] items-center justify-between gap-3 rounded-xl border border-[color:var(--border)] bg-[var(--bg-card-solid)] px-4 py-3.5 text-left text-sm font-semibold tracking-tight text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-nested)]"><span class="min-w-0 truncate">(K h a k i s)</span><span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border border-transparent font-mono text-xs text-[var(--text-faint)] transition group-hover:border-[color:var(--border)] group-hover:bg-[var(--bg-card-solid)] group-hover:text-[var(--accent)]" aria-hidden="true">↗</span></a>
       </div>
     </section>
 
@@ -250,15 +405,17 @@
       <h2 class="mb-8 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="work_title">Experience</h2>
 
       <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
-        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Concentrix Catalyst</h3>
-          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="cx_period">Jul 2024 — Present · Full-time · Shopify Team</span>
+        <div class="pdf-keep">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Concentrix Catalyst</h3>
+            <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="cx_period">Jul 2024 — Present · Full-time · Shopify Team</span>
+          </div>
+          <p class="mb-4 text-sm leading-relaxed" data-i18n="cx_desc">
+            Led and contributed to Shopify-based global e-commerce for international brands — owning not only frontend but project leadership, client communication, data migration, and QA automation to ensure service stability and delivery quality.
+          </p>
+          <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="cx_award">🏆 2025 Concentrix Korea Game Player Award</span>
+          <p class="mb-5 text-sm text-[var(--text-muted)]" data-i18n="cx_award_desc">Top performer representing the Concentrix Korea office — recognized for performance and leadership in global commerce projects.</p>
         </div>
-        <p class="mb-4 text-sm leading-relaxed" data-i18n="cx_desc">
-          Led and contributed to Shopify-based global e-commerce for international brands — owning not only frontend but project leadership, client communication, data migration, and QA automation to ensure service stability and delivery quality.
-        </p>
-        <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="cx_award">🏆 2025 Concentrix Korea Game Player Award</span>
-        <p class="mb-5 text-sm text-[var(--text-muted)]" data-i18n="cx_award_desc">Top performer representing the Concentrix Korea office — recognized for performance and leadership in global commerce projects.</p>
         <p class="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_key_resp">Key responsibilities</p>
         <ul class="mb-6 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
           <li data-i18n="cx_li1">Developed and maintained Shopify-based global e-commerce stores</li>
@@ -373,11 +530,13 @@
       </article>
 
       <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
-        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Genesis Lab</h3>
-          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="gen_period">Sep 2023 — Jul 2024 · Full-time · AAI Team</span>
+        <div class="pdf-keep">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Genesis Lab</h3>
+            <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="gen_period">Sep 2023 — Jul 2024 · Full-time · AAI Team</span>
+          </div>
+          <p class="mb-4 text-sm" data-i18n="gen_intro">Developed an AI data and model management platform</p>
         </div>
-        <p class="mb-4 text-sm" data-i18n="gen_intro">Developed an AI data and model management platform</p>
         <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
           <li data-i18n="gen_li1">Developed frontend features for an AI data and model management platform</li>
           <li data-i18n="gen_li2">Designed scalable data management interfaces</li>
@@ -417,12 +576,14 @@
       </article>
 
       <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
-        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">JKND</h3>
-          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="jk_period">Feb 2022 — Sep 2023 · Full-time · Digital Team</span>
+        <div class="pdf-keep">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">JKND</h3>
+            <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="jk_period">Feb 2022 — Sep 2023 · Full-time · Digital Team</span>
+          </div>
+          <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="jk_award">🏆 2022 JKND Best Player Award</span>
+          <p class="mb-4 text-sm text-[var(--text-muted)]" data-i18n="jk_award_desc">Selected as the top performer across the company</p>
         </div>
-        <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="jk_award">🏆 2022 JKND Best Player Award</span>
-        <p class="mb-4 text-sm text-[var(--text-muted)]" data-i18n="jk_award_desc">Selected as the top performer across the company</p>
         <p class="mb-4 text-sm" data-i18n="jk_intro">Developed brand commerce platforms and interactive web experiences</p>
         <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
           <li data-i18n="jk_li1">Developed Shopify-based e-commerce frontends</li>
@@ -479,11 +640,13 @@
       </article>
 
       <article class="rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
-        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
-          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">UNPeople</h3>
-          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="un_period">Aug 2021 — Jan 2022 · Full-time · UIUX Team</span>
+        <div class="pdf-keep">
+          <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+            <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">UNPeople</h3>
+            <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="un_period">Aug 2021 — Jan 2022 · Full-time · UIUX Team</span>
+          </div>
+          <p class="mb-4 text-sm" data-i18n="un_intro">Developed and published SI-based integrated web systems</p>
         </div>
-        <p class="mb-4 text-sm" data-i18n="un_intro">Developed and published SI-based integrated web systems</p>
         <ul class="mb-6 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
           <li data-i18n="un_li1">Developed and published web pages using U-CMS</li>
           <li data-i18n="un_li2">Ensured compliance with web accessibility standards</li>
@@ -618,11 +781,15 @@
     </footer>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js"></script>
   <script>
     (function () {
       var I18N = {
         en: {
           nav_aria: "Sections",
+          nav_menu_aria: "Open section menu",
+          nav_menu_close_aria: "Close menu",
+          nav_menu_title: "Sections",
           nav_profile: "Profile",
           nav_stores: "Stores",
           nav_work: "Work",
@@ -630,6 +797,13 @@
           nav_global: "Global",
           nav_edu: "Edu",
           lang_label: "Language",
+          pdf_region_aria: "PDF export",
+          pdf_group_aria: "Download portfolio as PDF (light theme)",
+          pdf_btn_en: "PDF · EN",
+          pdf_btn_ko: "PDF · KO",
+          pdf_err: "Could not create PDF. Try another browser or reload the page.",
+          pdf_print_hint:
+            "Opening the print dialog — choose Save as PDF (or Microsoft Print to PDF) to download a copy.",
           theme_aria: "Toggle color theme",
           theme_go_dark: "dark",
           theme_go_light: "light",
@@ -804,6 +978,9 @@
         },
         ko: {
           nav_aria: "섹션",
+          nav_menu_aria: "섹션 메뉴 열기",
+          nav_menu_close_aria: "메뉴 닫기",
+          nav_menu_title: "섹션",
           nav_profile: "프로필",
           nav_stores: "프로젝트",
           nav_work: "경력",
@@ -811,6 +988,12 @@
           nav_global: "해외 경험",
           nav_edu: "학력",
           lang_label: "언어",
+          pdf_region_aria: "PDF보내기",
+          pdf_group_aria: "포트폴리오 PDF 다운로드 (라이트)",
+          pdf_btn_en: "PDF · 영문",
+          pdf_btn_ko: "PDF · 한국어",
+          pdf_err: "PDF를 만들 수 없습니다. 다른 브라우저를 쓰거나 페이지를 새로고침해 보세요.",
+          pdf_print_hint: "인쇄 창이 열립니다. 프린터에서 PDF로 저장을 선택해 주세요.",
           theme_aria: "테마 변경",
           theme_go_dark: "다크",
           theme_go_light: "라이트",
@@ -999,8 +1182,17 @@
           var k = el.getAttribute("data-i18n-aria");
           if (t[k] !== undefined) el.setAttribute("aria-label", t[k]);
         });
-        var nav = document.querySelector("header nav");
-        if (nav && t.nav_aria) nav.setAttribute("aria-label", t.nav_aria);
+        var menuBtnSync = document.getElementById("nav-menu-btn");
+        if (menuBtnSync) {
+          var navOpen = menuBtnSync.getAttribute("aria-expanded") === "true";
+          menuBtnSync.setAttribute(
+            "aria-label",
+            navOpen ? (t.nav_menu_close_aria || "Close") : (t.nav_menu_aria || "Open menu")
+          );
+        }
+        document.querySelectorAll("nav[data-nav-desktop], nav[data-nav-mobile]").forEach(function (navEl) {
+          if (navEl && t.nav_aria) navEl.setAttribute("aria-label", t.nav_aria);
+        });
         if (t.page_title) document.title = t.page_title;
         var meta = document.querySelector('meta[name="description"]');
         if (meta && t.page_desc) meta.setAttribute("content", t.page_desc);
@@ -1022,6 +1214,8 @@
         return "en";
       }
 
+      var closeMobileNav = function () {};
+
       applyI18n(initialLang());
 
       var langSelect = document.getElementById("lang-select");
@@ -1041,6 +1235,226 @@
           } catch (e) {}
         });
       }
+
+      (function initMobileNav() {
+        var menuBtn = document.getElementById("nav-menu-btn");
+        var backdrop = document.getElementById("nav-mobile-backdrop");
+        var panel = document.getElementById("nav-mobile-panel");
+        if (!menuBtn || !backdrop || !panel) return;
+
+        var iconOpen = menuBtn.querySelector(".nav-icon-open");
+        var iconClose = menuBtn.querySelector(".nav-icon-close");
+
+        function navStrings() {
+          var sl = document.getElementById("lang-select");
+          var lang = sl && sl.value === "ko" ? "ko" : "en";
+          return I18N[lang] || I18N.en;
+        }
+
+        function setMenuOpen(open) {
+          menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+          var ts = navStrings();
+          menuBtn.setAttribute("aria-label", open ? (ts.nav_menu_close_aria || "Close") : (ts.nav_menu_aria || "Open menu"));
+          backdrop.classList.toggle("hidden", !open);
+          panel.classList.toggle("hidden", !open);
+          document.body.classList.toggle("nav-mobile-open", open);
+          if (iconOpen && iconClose) {
+            iconOpen.classList.toggle("hidden", open);
+            iconClose.classList.toggle("hidden", !open);
+          }
+        }
+
+        closeMobileNav = function () {
+          setMenuOpen(false);
+        };
+
+        menuBtn.addEventListener("click", function () {
+          setMenuOpen(menuBtn.getAttribute("aria-expanded") !== "true");
+        });
+
+        backdrop.addEventListener("click", function () {
+          setMenuOpen(false);
+        });
+
+        panel.querySelectorAll(".nav-mobile-link").forEach(function (link) {
+          link.addEventListener("click", function () {
+            setMenuOpen(false);
+          });
+        });
+
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" && menuBtn.getAttribute("aria-expanded") === "true") {
+            setMenuOpen(false);
+          }
+        });
+
+        var mqLg = window.matchMedia("(min-width: 1024px)");
+        function onResizeNav() {
+          if (mqLg.matches) setMenuOpen(false);
+        }
+        if (mqLg.addEventListener) mqLg.addEventListener("change", onResizeNav);
+        else if (mqLg.addListener) mqLg.addListener(onResizeNav);
+        window.addEventListener("resize", onResizeNav);
+
+        setMenuOpen(false);
+      })();
+
+      function loadScript(src) {
+        return new Promise(function (resolve, reject) {
+          var scripts = document.getElementsByTagName("script");
+          for (var i = 0; i < scripts.length; i++) {
+            if (scripts[i].src === src) {
+              var t0 = Date.now();
+              (function wait() {
+                if (typeof (globalThis.html2pdf || window.html2pdf) === "function") return resolve();
+                if (Date.now() - t0 > 10000) return reject(new Error("html2pdf timeout"));
+                setTimeout(wait, 40);
+              })();
+              return;
+            }
+          }
+          var s = document.createElement("script");
+          s.src = src;
+          s.async = true;
+          s.onload = function () {
+            if (typeof (globalThis.html2pdf || window.html2pdf) === "function") resolve();
+            else reject(new Error("html2pdf global missing"));
+          };
+          s.onerror = function () {
+            reject(new Error("script network"));
+          };
+          document.head.appendChild(s);
+        });
+      }
+
+      async function ensureHtml2Pdf() {
+        var h = globalThis.html2pdf || window.html2pdf;
+        if (typeof h === "function") return h;
+        var cdn = [
+          "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js",
+          "https://unpkg.com/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js",
+        ];
+        for (var c = 0; c < cdn.length; c++) {
+          try {
+            await loadScript(cdn[c]);
+            h = globalThis.html2pdf || window.html2pdf;
+            if (typeof h === "function") return h;
+          } catch (e1) {
+            /* try next cdn */
+          }
+        }
+        throw new Error("html2pdf missing");
+      }
+
+      async function generatePortfolioPdf(targetLang) {
+        var main = document.querySelector("main");
+        if (!main) return;
+
+        var sel = document.getElementById("lang-select");
+        var prevLang = sel && sel.value === "ko" ? "ko" : "en";
+        var root = document.documentElement;
+        var prevDark = root.classList.contains("dark");
+        var btnEn = document.getElementById("pdf-dl-en");
+        var btnKo = document.getElementById("pdf-dl-ko");
+        var ok = false;
+
+        function setBusy(on) {
+          [btnEn, btnKo].forEach(function (el) {
+            if (!el) return;
+            el.disabled = on;
+            el.setAttribute("aria-busy", on ? "true" : "false");
+          });
+        }
+
+        document.body.classList.add("pdf-generating");
+        closeMobileNav();
+        setBusy(true);
+        try {
+          applyI18n(targetLang);
+          root.classList.remove("dark");
+          window.scrollTo(0, 0);
+          await document.fonts.ready;
+          await new Promise(function (r) {
+            setTimeout(r, 400);
+          });
+
+          var filename =
+            targetLang === "ko" ? "Karam-Cho-Portfolio-KO-Light.pdf" : "Karam-Cho-Portfolio-EN-Light.pdf";
+
+          var h2p = await ensureHtml2Pdf();
+          await h2p()
+            .from(main)
+            .set({
+              margin: 8,
+              filename: filename,
+              image: { type: "png", quality: 1 },
+              pagebreak: {
+                mode: ["avoid-all", "legacy"],
+                avoid: ["img", ".pdf-keep", ".store-link", "article .rounded-xl"],
+              },
+              html2canvas: {
+                scale: 1,
+                useCORS: true,
+                allowTaint: false,
+                logging: false,
+                backgroundColor: "#ffffff",
+                foreignObjectRendering: false,
+                scrollX: 0,
+                scrollY: 0,
+                onclone: function (clonedDoc) {
+                  try {
+                    clonedDoc.documentElement.classList.remove("dark");
+                    clonedDoc.querySelectorAll('link[href*="fonts.googleapis"], link[href*="fonts.gstatic"]').forEach(function (ln) {
+                      ln.remove();
+                    });
+                    var strip = clonedDoc.createElement("style");
+                    strip.setAttribute("data-html2pdf-fix", "1");
+                    strip.textContent = [
+                      "html,body{background:#fff!important;color:#0f172a!important;}",
+                      "main,main *{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif!important;-webkit-font-smoothing:auto!important;}",
+                      "main *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;mask-image:none!important;-webkit-mask-image:none!important;box-shadow:none!important;filter:none!important;transform:none!important;text-shadow:none!important;mix-blend-mode:normal!important;opacity:1!important;}",
+                      "main img,.pdf-keep,.store-link,main article .rounded-xl{break-inside:avoid!important;page-break-inside:avoid!important;}",
+                      "#stores .store-link{display:flex!important;align-items:center!important;justify-content:space-between!important;background:#fff!important;border:1px solid #e2e8f0!important;color:#0f172a!important;}",
+                      "#stores .store-link span:last-child{background:#f8fafc!important;border:1px solid #e2e8f0!important;color:#64748b!important;}",
+                    ].join("");
+                    (clonedDoc.head || clonedDoc.documentElement).appendChild(strip);
+                  } catch (oc) {
+                    console.warn(oc);
+                  }
+                },
+              },
+              jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compress: true },
+            })
+            .save();
+          ok = true;
+        } catch (err) {
+          console.error(err);
+        } finally {
+          document.body.classList.remove("pdf-generating");
+          setBusy(false);
+          if (!ok) {
+            var tm = I18N[prevLang] || I18N.en;
+            alert(tm.pdf_print_hint || I18N.en.pdf_print_hint);
+            try {
+              window.print();
+            } catch (pe) {
+              console.error(pe);
+              alert(tm.pdf_err || I18N.en.pdf_err);
+            }
+          }
+          applyI18n(prevLang);
+          if (prevDark) root.classList.add("dark");
+          else root.classList.remove("dark");
+          try {
+            localStorage.setItem("portfolio-theme", prevDark ? "dark" : "light");
+          } catch (e2) {}
+        }
+      }
+
+      var pdfEn = document.getElementById("pdf-dl-en");
+      var pdfKo = document.getElementById("pdf-dl-ko");
+      if (pdfEn) pdfEn.addEventListener("click", function () { generatePortfolioPdf("en"); });
+      if (pdfKo) pdfKo.addEventListener("click", function () { generatePortfolioPdf("ko"); });
     })();
   </script>
 </body>
