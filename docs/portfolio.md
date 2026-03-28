@@ -9,7 +9,7 @@
 - **Email** | [lizchokaram@gmail.com](mailto:lizchokaram@gmail.com)
 - **Phone** | +82-10-4432-0541
 - **Experience** | 4 years 8 months
-- [Portfolio](https://www.notion.so/Portfolio-329e88ab8b1980cca784f8aca2512c85?pvs=21)
+- **Portfolio** | [karamcho.github.io/portfolio](https://karamcho.github.io/portfolio/)
 
 # 👩🏻‍💻 **Profile**
 
