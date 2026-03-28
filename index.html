@@ -807,7 +807,6 @@
     </footer>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js"></script>
   <script>
     (function () {
       var I18N = {
@@ -823,8 +822,8 @@
           nav_global: "Global",
           nav_edu: "Edu",
           lang_label: "Language",
-          pdf_region_aria: "PDF export",
-          pdf_group_aria: "Download portfolio as PDF (light theme)",
+          pdf_region_aria: "Print / save as PDF",
+          pdf_group_aria: "Open print dialog — choose Save as PDF (light theme)",
           pdf_btn_en: "PDF · EN",
           pdf_btn_ko: "PDF · KO",
           pdf_err: "Could not create PDF. Try another browser or reload the page.",
@@ -1020,8 +1019,8 @@
           nav_global: "해외 경험",
           nav_edu: "학력",
           lang_label: "언어",
-          pdf_region_aria: "PDF보내기",
-          pdf_group_aria: "포트폴리오 PDF 다운로드 (라이트)",
+          pdf_region_aria: "인쇄 / PDF 저장",
+          pdf_group_aria: "인쇄 창 열기 — PDF로 저장 선택 (라이트 테마)",
           pdf_btn_en: "PDF · 영문",
           pdf_btn_ko: "PDF · 한국어",
           pdf_err: "PDF를 만들 수 없습니다. 다른 브라우저를 쓰거나 페이지를 새로고침해 보세요.",
@@ -1341,54 +1340,7 @@
         setMenuOpen(false);
       })();
 
-      function loadScript(src) {
-        return new Promise(function (resolve, reject) {
-          var scripts = document.getElementsByTagName("script");
-          for (var i = 0; i < scripts.length; i++) {
-            if (scripts[i].src === src) {
-              var t0 = Date.now();
-              (function wait() {
-                if (typeof (globalThis.html2pdf || window.html2pdf) === "function") return resolve();
-                if (Date.now() - t0 > 10000) return reject(new Error("html2pdf timeout"));
-                setTimeout(wait, 40);
-              })();
-              return;
-            }
-          }
-          var s = document.createElement("script");
-          s.src = src;
-          s.async = true;
-          s.onload = function () {
-            if (typeof (globalThis.html2pdf || window.html2pdf) === "function") resolve();
-            else reject(new Error("html2pdf global missing"));
-          };
-          s.onerror = function () {
-            reject(new Error("script network"));
-          };
-          document.head.appendChild(s);
-        });
-      }
-
-      async function ensureHtml2Pdf() {
-        var h = globalThis.html2pdf || window.html2pdf;
-        if (typeof h === "function") return h;
-        var cdn = [
-          "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js",
-          "https://unpkg.com/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js",
-        ];
-        for (var c = 0; c < cdn.length; c++) {
-          try {
-            await loadScript(cdn[c]);
-            h = globalThis.html2pdf || window.html2pdf;
-            if (typeof h === "function") return h;
-          } catch (e1) {
-            /* try next cdn */
-          }
-        }
-        throw new Error("html2pdf missing");
-      }
-
-      async function generatePortfolioPdf(targetLang) {
+      function openPortfolioPrint(targetLang) {
         var main = document.querySelector("main");
         if (!main) return;
 
@@ -1398,7 +1350,6 @@
         var prevDark = root.classList.contains("dark");
         var btnEn = document.getElementById("pdf-dl-en");
         var btnKo = document.getElementById("pdf-dl-ko");
-        var ok = false;
 
         function setBusy(on) {
           [btnEn, btnKo].forEach(function (el) {
@@ -1408,82 +1359,19 @@
           });
         }
 
-        document.body.classList.add("pdf-generating");
-        closeMobileNav();
-        setBusy(true);
-        try {
-          applyI18n(targetLang);
-          root.classList.remove("dark");
-          window.scrollTo(0, 0);
-          await document.fonts.ready;
-          await new Promise(function (r) {
-            setTimeout(r, 400);
-          });
+        var cleaned = false;
+        var mq = window.matchMedia ? window.matchMedia("print") : null;
 
-          var filename =
-            targetLang === "ko" ? "Karam-Cho-Portfolio-KO-Light.pdf" : "Karam-Cho-Portfolio-EN-Light.pdf";
-
-          var h2p = await ensureHtml2Pdf();
-          await h2p()
-            .from(main)
-            .set({
-              margin: 8,
-              filename: filename,
-              image: { type: "png", quality: 1 },
-              pagebreak: {
-                mode: ["avoid-all", "legacy"],
-                avoid: ["img", ".pdf-keep", ".store-link", "article .rounded-xl"],
-              },
-              html2canvas: {
-                scale: 1,
-                useCORS: true,
-                allowTaint: false,
-                logging: false,
-                backgroundColor: "#ffffff",
-                foreignObjectRendering: false,
-                scrollX: 0,
-                scrollY: 0,
-                onclone: function (clonedDoc) {
-                  try {
-                    clonedDoc.documentElement.classList.remove("dark");
-                    clonedDoc.querySelectorAll('link[href*="fonts.googleapis"], link[href*="fonts.gstatic"]').forEach(function (ln) {
-                      ln.remove();
-                    });
-                    var strip = clonedDoc.createElement("style");
-                    strip.setAttribute("data-html2pdf-fix", "1");
-                    strip.textContent = [
-                      "html,body{background:#fff!important;color:#0f172a!important;}",
-                      "main,main *{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif!important;-webkit-font-smoothing:auto!important;}",
-                      "main *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;mask-image:none!important;-webkit-mask-image:none!important;box-shadow:none!important;filter:none!important;transform:none!important;text-shadow:none!important;mix-blend-mode:normal!important;opacity:1!important;}",
-                      "main img,.pdf-keep,.store-link,main article .rounded-xl{break-inside:avoid!important;page-break-inside:avoid!important;}",
-                      "#stores .store-link{display:flex!important;align-items:center!important;justify-content:space-between!important;background:#fff!important;border:1px solid #e2e8f0!important;color:#0f172a!important;}",
-                      "#stores .store-link span:last-child{background:#f8fafc!important;border:1px solid #e2e8f0!important;color:#64748b!important;}",
-                    ].join("");
-                    (clonedDoc.head || clonedDoc.documentElement).appendChild(strip);
-                  } catch (oc) {
-                    console.warn(oc);
-                  }
-                },
-              },
-              jsPDF: { unit: "mm", format: "a4", orientation: "portrait", compress: true },
-            })
-            .save();
-          ok = true;
-        } catch (err) {
-          console.error(err);
-        } finally {
+        function restore() {
+          if (cleaned) return;
+          cleaned = true;
+          window.removeEventListener("afterprint", onAfterPrint);
+          if (mq) {
+            if (mq.removeEventListener) mq.removeEventListener("change", onMqPrint);
+            else if (mq.removeListener) mq.removeListener(onMqPrint);
+          }
           document.body.classList.remove("pdf-generating");
           setBusy(false);
-          if (!ok) {
-            var tm = I18N[prevLang] || I18N.en;
-            alert(tm.pdf_print_hint || I18N.en.pdf_print_hint);
-            try {
-              window.print();
-            } catch (pe) {
-              console.error(pe);
-              alert(tm.pdf_err || I18N.en.pdf_err);
-            }
-          }
           applyI18n(prevLang);
           if (prevDark) root.classList.add("dark");
           else root.classList.remove("dark");
@@ -1491,12 +1379,51 @@
             localStorage.setItem("portfolio-theme", prevDark ? "dark" : "light");
           } catch (e2) {}
         }
+
+        function onAfterPrint() {
+          restore();
+        }
+
+        function onMqPrint() {
+          if (mq && !mq.matches) restore();
+        }
+
+        window.addEventListener("afterprint", onAfterPrint);
+        if (mq) {
+          if (mq.addEventListener) mq.addEventListener("change", onMqPrint);
+          else if (mq.addListener) mq.addListener(onMqPrint);
+        }
+
+        document.body.classList.add("pdf-generating");
+        closeMobileNav();
+        setBusy(true);
+        applyI18n(targetLang);
+        root.classList.remove("dark");
+        window.scrollTo(0, 0);
+
+        function runPrint() {
+          setTimeout(function () {
+            try {
+              window.print();
+            } catch (pe) {
+              console.error(pe);
+              restore();
+              var tm = I18N[prevLang] || I18N.en;
+              alert(tm.pdf_err || I18N.en.pdf_err);
+            }
+          }, 200);
+        }
+        if (document.fonts && document.fonts.ready) {
+          document.fonts.ready.then(runPrint).catch(runPrint);
+        } else {
+          runPrint();
+        }
       }
 
       var pdfEn = document.getElementById("pdf-dl-en");
       var pdfKo = document.getElementById("pdf-dl-ko");
-      if (pdfEn) pdfEn.addEventListener("click", function () { generatePortfolioPdf("en"); });
-      if (pdfKo) pdfKo.addEventListener("click", function () { generatePortfolioPdf("ko"); });
+      if (pdfEn) pdfEn.addEventListener("click", function () { openPortfolioPrint("en"); });
+      if (pdfKo) pdfKo.addEventListener("click", function () { openPortfolioPrint("ko"); });
     })();
   </script>
 </body>
