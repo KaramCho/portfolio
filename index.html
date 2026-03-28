@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Karam Cho — Shopify Developer</title>
+  <meta name="description" content="Shopify & React developer. Global e-commerce, migrations, QA automation." />
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem("portfolio-theme");
+        var root = document.documentElement;
+        if (s === "light") root.classList.remove("dark");
+        else if (s === "dark") root.classList.add("dark");
+        else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) root.classList.remove("dark");
+        else root.classList.add("dark");
+      } catch (e) {}
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    (function () {
+      try {
+        var l = localStorage.getItem("portfolio-lang");
+        if (l === "ko") document.documentElement.lang = "ko";
+        else if (l === "en") document.documentElement.lang = "en";
+        else if (navigator.language && navigator.language.indexOf("ko") === 0) document.documentElement.lang = "ko";
+        else document.documentElement.lang = "en";
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ["Inter", "system-ui", "sans-serif"],
+            mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    :root {
+      --bg-page: #ffffff;
+      --bg-card: #ffffff;
+      --bg-card-solid: #ffffff;
+      --bg-nested: #f8fafc;
+      --bg-chip: #f1f5f9;
+      --header-bg: rgba(255, 255, 255, 0.82);
+      --border: rgba(15, 23, 42, 0.08);
+      --border-strong: rgba(15, 23, 42, 0.14);
+      --text-primary: #0f172a;
+      --text-body: #475569;
+      --text-muted: #64748b;
+      --text-faint: #94a3b8;
+      --accent: #0d9488;
+      --accent-hover: #0f766e;
+      --accent-soft: rgba(13, 148, 136, 0.12);
+      --date: #4f46e5;
+      --chip-text: #115e59;
+      --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.06), 0 12px 32px -8px rgba(15, 23, 42, 0.1);
+      --shadow-float: 0 2px 8px rgba(15, 23, 42, 0.08), 0 4px 16px rgba(15, 23, 42, 0.06);
+      --selection-bg: rgba(13, 148, 136, 0.18);
+      --selection-text: #0f172a;
+      --grid-line: rgba(15, 23, 42, 0.055);
+    }
+    html.dark {
+      --bg-page: #09090b;
+      --bg-card: rgba(24, 24, 27, 0.4);
+      --bg-card-solid: #18181b;
+      --bg-nested: rgba(9, 9, 11, 0.5);
+      --bg-chip: #09090b;
+      --header-bg: rgba(9, 9, 11, 0.75);
+      --border: rgba(63, 63, 70, 0.55);
+      --border-strong: rgba(82, 82, 91, 0.7);
+      --text-primary: #fafafa;
+      --text-body: #a1a1aa;
+      --text-muted: #71717a;
+      --text-faint: #52525b;
+      --accent: #34d399;
+      --accent-hover: #6ee7b7;
+      --accent-soft: rgba(52, 211, 153, 0.12);
+      --date: #a78bfa;
+      --chip-text: rgba(52, 211, 153, 0.9);
+      --shadow-card: 0 20px 40px -12px rgba(0, 0, 0, 0.45);
+      --shadow-float: 0 8px 24px rgba(0, 0, 0, 0.35);
+      --selection-bg: rgba(52, 211, 153, 0.25);
+      --selection-text: #ecfdf5;
+      --grid-line: rgba(63, 63, 70, 0.35);
+    }
+    .theme-grid {
+      background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+    #theme-toggle:active .toggle-emoji {
+      transform: scale(0.92);
+    }
+    html[lang="ko"] body {
+      font-family: "Noto Sans KR", Inter, system-ui, sans-serif;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    #lang-select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      min-width: 3.35rem;
+      padding: 0.4rem 2.5rem 0.4rem 0.75rem;
+      background-repeat: no-repeat;
+      background-position: right 0.85rem center;
+      background-size: 11px 11px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%2364748b' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    }
+    html.dark #lang-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 16 16'%3E%3Cpath stroke='%23a1a1aa' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.75' d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-[var(--bg-page)] font-sans text-[var(--text-body)] antialiased transition-[background-color,color] duration-300 selection:bg-[var(--selection-bg)] selection:text-[var(--selection-text)]">
+  <div class="theme-grid pointer-events-none fixed inset-0 opacity-40 [mask-image:radial-gradient(ellipse_70%_50%_at_50%_0%,#000_15%,transparent_65%)] dark:opacity-35" aria-hidden="true"></div>
+
+  <header class="sticky top-0 z-50 border-b border-[color:var(--border)] bg-[var(--header-bg)] backdrop-blur-xl backdrop-saturate-150 transition-colors duration-300">
+    <div class="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+      <a href="#top" class="font-mono text-sm font-semibold text-[var(--accent)] transition hover:text-[var(--accent-hover)]">~/karam</a>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <nav aria-label="Sections">
+          <ul class="flex max-w-[220px] flex-wrap justify-end gap-x-2 gap-y-1 font-mono text-[9px] uppercase tracking-wider text-[var(--text-muted)] sm:max-w-none sm:gap-x-4 sm:text-xs">
+            <li><a href="#profile" class="transition hover:text-[var(--accent)]" data-i18n="nav_profile">Profile</a></li>
+            <li><a href="#stores" class="transition hover:text-[var(--accent)]" data-i18n="nav_stores">Stores</a></li>
+            <li><a href="#work" class="transition hover:text-[var(--accent)]" data-i18n="nav_work">Work</a></li>
+            <li><a href="#tech" class="transition hover:text-[var(--accent)]" data-i18n="nav_tech">Tech</a></li>
+            <li><a href="#international" class="transition hover:text-[var(--accent)]" data-i18n="nav_global">Global</a></li>
+            <li><a href="#education" class="transition hover:text-[var(--accent)]" data-i18n="nav_edu">Edu</a></li>
+          </ul>
+        </nav>
+        <div class="flex shrink-0 items-center">
+          <label class="sr-only" for="lang-select" data-i18n="lang_label">Language</label>
+          <select
+            id="lang-select"
+            class="cursor-pointer rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] font-mono text-[11px] font-medium text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:border-[var(--accent)] dark:border-zinc-600/80"
+          >
+            <option value="en">EN</option>
+            <option value="ko">KO</option>
+          </select>
+        </div>
+        <button
+          type="button"
+          id="theme-toggle"
+          class="group flex shrink-0 items-center gap-1.5 rounded-full border-2 border-[color:var(--border)] bg-[var(--bg-card-solid)] px-3 py-1.5 font-mono text-[11px] font-medium text-[var(--text-primary)] shadow-[var(--shadow-float)] transition hover:scale-[1.03] active:scale-[0.98] dark:border-zinc-600/80"
+          data-i18n-aria="theme_aria"
+          aria-label="Toggle color theme"
+        >
+          <span class="toggle-emoji inline-block text-base transition-transform duration-200 group-hover:rotate-12 dark:hidden" aria-hidden="true">🌙</span>
+          <span class="toggle-emoji hidden text-base transition-transform duration-200 group-hover:rotate-12 dark:inline" aria-hidden="true">☀️</span>
+          <span class="hidden sm:inline"><span class="dark:hidden" data-i18n="theme_go_dark">dark</span><span class="hidden dark:inline" data-i18n="theme_go_light">light</span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top" class="relative mx-auto max-w-3xl px-4 pb-24 pt-10 sm:px-6">
+    <p class="mb-6 text-center font-mono text-[10px] text-[var(--text-faint)] opacity-80" data-i18n="meta_line">✨ portfolio v1 · tailwind + vanilla js</p>
+
+    <section class="mb-16 grid gap-8 sm:grid-cols-[auto_1fr] sm:gap-10 sm:pt-4">
+      <div class="relative shrink-0">
+        <img
+          src="assets/avatar.png"
+          alt="Karam Cho"
+          width="112"
+          height="112"
+          class="h-28 w-28 rounded-2xl border border-[color:var(--border)] object-cover shadow-[var(--shadow-card)] ring-2 ring-[var(--accent-soft)]"
+          onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden'); this.nextElementSibling.classList.add('flex');"
+        />
+        <div class="hidden h-28 w-28 items-center justify-center rounded-2xl border-2 border-dashed border-[color:var(--border-strong)] bg-[var(--bg-nested)] font-mono text-2xl font-semibold text-[var(--text-faint)]" aria-hidden="true">KC</div>
+      </div>
+      <div>
+        <p class="mb-2 font-mono text-xs text-[var(--text-muted)]">
+          <span class="text-[var(--accent)]">➜</span> <span class="text-[var(--text-body)]">~</span> <span class="text-[var(--date)]">portfolio</span>
+        </p>
+        <h1 class="text-3xl font-bold tracking-tight text-[var(--text-primary)] sm:text-4xl">Karam Cho</h1>
+        <p class="mt-1 font-mono text-sm text-[var(--accent)]" data-i18n="hero_role">Shopify Developer</p>
+        <p class="mt-2 text-sm leading-relaxed sm:text-base" data-i18n="hero_lead">
+          Frontend developer focused on global e-commerce, Shopify storefronts, migrations, and QA automation — React, TypeScript, and end-to-end delivery.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2 font-mono text-[11px] sm:text-xs">
+          <span class="rounded-lg border border-[color:var(--border)] bg-[var(--bg-nested)] px-2 py-1 text-[var(--text-muted)]">React</span>
+          <span class="rounded-lg border border-[color:var(--border)] bg-[var(--bg-nested)] px-2 py-1 text-[var(--text-muted)]">TypeScript</span>
+          <span class="rounded-lg border border-[color:var(--border)] bg-[var(--bg-nested)] px-2 py-1 text-[var(--text-muted)]">Shopify</span>
+          <span class="rounded-lg border border-[color:var(--border)] bg-[var(--bg-nested)] px-2 py-1 text-[var(--text-muted)]">GraphQL</span>
+        </div>
+        <div class="mt-6 flex flex-col gap-3 border-t border-[color:var(--border)] pt-6 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-6 sm:gap-y-2">
+          <a href="mailto:lizchokaram@gmail.com" class="font-mono text-xs text-[var(--accent)] underline-offset-4 hover:text-[var(--accent-hover)] hover:underline">lizchokaram@gmail.com</a>
+          <span class="font-mono text-xs text-[var(--text-muted)]">+82-10-4432-0541</span>
+          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="hero_exp">4y 8mo</span>
+          <a href="https://www.notion.so/Portfolio-329e88ab8b1980cca784f8aca2512c85?pvs=21" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-[var(--text-muted)] underline-offset-4 hover:text-[var(--accent)] hover:underline" data-i18n="hero_notion">Notion ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="profile" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_profile_label">01 — Profile</p>
+      <h2 class="mb-4 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="about_title">About</h2>
+      <div class="rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <p class="mb-4 text-sm leading-relaxed last:mb-0" data-i18n="profile_p1">
+          I am a web developer with approximately four years of experience building a wide range of web services and global e-commerce platforms. I specialize in frontend development using React and TypeScript, with a solid understanding of end-to-end systems including API integration, data migration, and cloud infrastructure.
+        </p>
+        <p class="mb-4 text-sm leading-relaxed last:mb-0" data-i18n="profile_p2">
+          In Shopify-based global commerce projects, I have taken ownership of frontend development while collaborating closely across cross-functional teams. I developed a QA automation system that streamlined repetitive processes such as UI validation, SEO checks, and accessibility testing, significantly improving overall quality assurance efficiency.
+        </p>
+        <p class="text-sm leading-relaxed" data-i18n="profile_p3">
+          I have also contributed to multi-country store migrations and new store launches by aligning technical implementation with business requirements, helping enhance service stability and operational efficiency.
+        </p>
+      </div>
+    </section>
+
+    <section id="stores" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_stores_label">02 — Stores</p>
+      <h2 class="mb-1 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="stores_title">Shopify stores</h2>
+      <p class="mb-5 text-sm text-[var(--text-muted)]" data-i18n="stores_sub">Stores I’ve built &amp; customized</p>
+      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <a href="https://www.innisfree.jp/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree JP <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://vn.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree VN <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://tw.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree TW <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://my.innisfree.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">innisfree MY <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://thewhoo-usa.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">THE WHOO US <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://jp.aestura.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">AESTURA JP <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://kataseoul.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">KATA Seoul <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://tune.kr/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">TUNE KR <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://tenui.kr/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">Tenui <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://thisisneverthat.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">thisisneverthat <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+        <a href="https://khakis2020.com/" target="_blank" rel="noopener noreferrer" class="group rounded-xl border border-[color:var(--border)] bg-[var(--bg-card)] px-4 py-3 text-sm font-medium text-[var(--text-primary)] shadow-sm backdrop-blur-sm transition hover:border-[var(--accent)] hover:shadow-[var(--shadow-float)]">(K h a k i s) <span class="float-right font-mono text-xs text-[var(--text-faint)] group-hover:text-[var(--accent)]">↗</span></a>
+      </div>
+    </section>
+
+    <section id="work" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_work_label">03 — Work</p>
+      <h2 class="mb-8 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="work_title">Experience</h2>
+
+      <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
+        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Concentrix Catalyst</h3>
+          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="cx_period">Jul 2024 — Present · Full-time · Shopify Team</span>
+        </div>
+        <p class="mb-4 text-sm leading-relaxed" data-i18n="cx_desc">
+          Led and contributed to Shopify-based global e-commerce for international brands — owning not only frontend but project leadership, client communication, data migration, and QA automation to ensure service stability and delivery quality.
+        </p>
+        <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="cx_award">🏆 2025 Concentrix Korea Game Player Award</span>
+        <p class="mb-5 text-sm text-[var(--text-muted)]" data-i18n="cx_award_desc">Top performer representing the Concentrix Korea office — recognized for performance and leadership in global commerce projects.</p>
+        <p class="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_key_resp">Key responsibilities</p>
+        <ul class="mb-6 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="cx_li1">Developed and maintained Shopify-based global e-commerce stores</li>
+          <li data-i18n="cx_li2">Executed product, customer, and order data migration using GraphQL</li>
+          <li data-i18n="cx_li3">Designed localized payment, shipping, and membership workflows</li>
+          <li data-i18n="cx_li4">Managed project timelines and facilitated client–dev collaboration</li>
+          <li data-i18n="cx_li5">Enhanced QA processes through automation systems</li>
+        </ul>
+        <p class="mb-2 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_tech_stack">Tech stack</p>
+        <ul class="flex flex-wrap gap-2">
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Shopify</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">GraphQL</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Selenium</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Flask</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">AWS EC2</li>
+        </ul>
+
+        <h4 class="mb-4 mt-8 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_projects">Projects</h4>
+
+        <div class="mb-4 rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_sulwhasoo_title">Sulwhasoo Japan E-commerce Store Development</h4>
+          <p class="mt-1 font-mono text-xs text-[var(--date)]" data-i18n="proj_sulwhasoo_date">2026.03 — 2026.05 · Currently ongoing</p>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_role">Role</p>
+          <p class="mb-3 text-sm text-[var(--text-primary)]" data-i18n="role_lead">Development / Project Lead</p>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_contrib">Contributions</p>
+          <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="sw_li1">Developed Shopify themes and implemented frontend features</li>
+            <li data-i18n="sw_li2">Led project execution and guided team direction</li>
+            <li data-i18n="sw_li3">Supported key technical decision-making</li>
+            <li data-i18n="sw_li4">Translated business requirements into technical solutions</li>
+            <li data-i18n="sw_li5">Ensured code quality through reviews and technical oversight</li>
+          </ul>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Shopify</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React.js</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">GraphQL</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">cursor AI</li>
+          </ul>
+        </div>
+
+        <div class="mb-4 rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_inni_title">Innisfree Global Store Migration (JP / TW / VN / MY) to Shopify</h4>
+          <p class="mt-1 font-mono text-xs text-[var(--date)]" data-i18n="proj_inni_date">2025.08 — 2026.02</p>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_role">Role</p>
+          <p class="mb-3 text-sm text-[var(--text-primary)]" data-i18n="role_lead">Development / Project Lead</p>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_markets">Target markets</p>
+          <p class="mb-3 text-sm" data-i18n="markets_list">Japan · Taiwan · Vietnam · Malaysia</p>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_key_contrib">Key contributions</p>
+          <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="in_li1">Defined and executed Shopify data migration strategies</li>
+            <li data-i18n="in_li2">Migrated product, customer, and order data using GraphQL</li>
+            <li data-i18n="in_li3">Led frontend development across multiple regional stores</li>
+            <li data-i18n="in_li4">Implemented localized payment and shipping systems</li>
+            <li data-i18n="in_li5">Ensured compliance with regional regulations (e.g., Japan and Taiwan)</li>
+            <li data-i18n="in_li6">Coordinated cross-functional requirements across teams</li>
+            <li data-i18n="in_li7">Improved service stability through continuous enhancements and issue resolution</li>
+          </ul>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Shopify</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React.js</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">GraphQL</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Selenium</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Flask</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Google Translate API</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">EC2</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">cursor AI</li>
+          </ul>
+        </div>
+
+        <div class="mb-4 rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_whoo_title">LG Beauty THE WHOO US Store Development</h4>
+          <p class="mt-1 font-mono text-xs text-[var(--date)]" data-i18n="proj_whoo_date">2024.11 — 2025.04</p>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_role">Role</p>
+          <p class="mb-3 text-sm text-[var(--text-primary)]" data-i18n="role_shopify_dev">Shopify Developer</p>
+          <ul class="ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="wh_li1">Implemented Shopify-based frontend features and UI components</li>
+            <li data-i18n="wh_li2">Customized themes and built reusable components</li>
+            <li data-i18n="wh_li3">Collaborated with clients and stakeholders to align requirements</li>
+            <li data-i18n="wh_li4">Improved performance and enhanced UI/UX after launch</li>
+            <li data-i18n="wh_li5">Resolved issues and maintained service stability</li>
+          </ul>
+        </div>
+
+        <div class="rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_qa_title">Shopify QA Automation System Development</h4>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_key_features">Key features</p>
+          <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="qa_li1">Automated desktop and mobile screen capture</li>
+            <li data-i18n="qa_li2">Implemented SEO and accessibility validation (WCAG 2.1)</li>
+            <li data-i18n="qa_li3">Built GTM debugging and DataLayer tracking automation</li>
+            <li data-i18n="qa_li4">Developed scenario-based automated test execution</li>
+            <li data-i18n="qa_li5">Applied AI-based data validation</li>
+          </ul>
+          <ul class="mb-4 flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Selenium</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Flask</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Google Translate API</li>
+          </ul>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_achievements">Achievements</p>
+          <ul class="ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="qa_a1">Reduced QA validation time significantly</li>
+            <li data-i18n="qa_a2">Eliminated repetitive manual testing processes</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
+        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">Genesis Lab</h3>
+          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="gen_period">Sep 2023 — Jul 2024 · Full-time · AAI Team</span>
+        </div>
+        <p class="mb-4 text-sm" data-i18n="gen_intro">Developed an AI data and model management platform</p>
+        <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="gen_li1">Developed frontend features for an AI data and model management platform</li>
+          <li data-i18n="gen_li2">Designed scalable data management interfaces</li>
+          <li data-i18n="gen_li3">Built REST APIs using Spring Boot</li>
+          <li data-i18n="gen_li4">Implemented data monitoring and analytics systems</li>
+          <li data-i18n="gen_li5">Developed mobile applications using React Native</li>
+        </ul>
+        <ul class="mb-6 flex flex-wrap gap-2">
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React Native</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Spring</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">JAVA</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Realm</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">SonarQube</li>
+        </ul>
+        <div class="rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_clinical_title">Clinical Interview Voice Data Collection App</h4>
+          <p class="mt-1 font-mono text-xs text-[var(--date)]" data-i18n="proj_clinical_date">2023.09 — 2024.07</p>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_role">Role</p>
+          <p class="mb-3 text-sm text-[var(--text-primary)]" data-i18n="role_fullstack">Full-stack Developer</p>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_features">Features</p>
+          <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="cl_li1">Large-scale audio file upload system</li>
+            <li data-i18n="cl_li2">File transfer status monitoring</li>
+            <li data-i18n="cl_li3">Data integrity validation</li>
+          </ul>
+          <p class="font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_contrib">Contributions</p>
+          <ul class="ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="cl_li4">Implemented local data management using Realm</li>
+            <li data-i18n="cl_li5">Developed background chunked file upload system</li>
+            <li data-i18n="cl_li6">Implemented network error handling and retry logic</li>
+            <li data-i18n="cl_li7">Built server data synchronization system and REST APIs</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="mb-10 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
+        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">JKND</h3>
+          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="jk_period">Feb 2022 — Sep 2023 · Full-time · Digital Team</span>
+        </div>
+        <span class="mb-3 inline-flex rounded-full border border-[color:var(--border)] bg-[var(--bg-nested)] px-3 py-1 font-mono text-xs text-[var(--text-primary)]" data-i18n="jk_award">🏆 2022 JKND Best Player Award</span>
+        <p class="mb-4 text-sm text-[var(--text-muted)]" data-i18n="jk_award_desc">Selected as the top performer across the company</p>
+        <p class="mb-4 text-sm" data-i18n="jk_intro">Developed brand commerce platforms and interactive web experiences</p>
+        <ul class="mb-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="jk_li1">Developed Shopify-based e-commerce frontends</li>
+          <li data-i18n="jk_li2">Built interactive web experiences using Three.js and WebGL</li>
+          <li data-i18n="jk_li3">Implemented serverless architectures with AWS Lambda</li>
+          <li data-i18n="jk_li4">Established monitoring systems using Sentry</li>
+        </ul>
+        <ul class="mb-6 flex flex-wrap gap-2">
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">JavaScript</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Next.js</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Hydrogen</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Three.js</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">WebGL</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">AWS Lambda</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Shopify</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">GraphQL</li>
+        </ul>
+        <div class="mb-4 rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_tenui_title">Tenui Cosmetics E-commerce Platform</h4>
+          <p class="mt-2 text-sm" data-i18n="proj_tenui_sub">Headless commerce store built using Shopify Hydrogen</p>
+          <ul class="mt-3 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="te_li1">Data management using Shopify Storefront API</li>
+            <li data-i18n="te_li2">Toss Payments integration</li>
+            <li data-i18n="te_li3">Order management via Shopify Admin API</li>
+            <li data-i18n="te_li4">Developed frontend using React and Next.js with Hydrogen</li>
+            <li data-i18n="te_li5">Built return/exchange automation using AWS Lambda</li>
+          </ul>
+        </div>
+        <div class="mb-4 rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_tune_title">Tune Multi-brand E-commerce Platform</h4>
+          <p class="mt-2 text-sm" data-i18n="proj_tune_sub">Multi-brand commerce platform featuring global brands such as Nike and New Balance</p>
+          <ul class="mt-3 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="tu_li1">Raffle-based purchasing system, automated payment processing, user identity verification</li>
+            <li data-i18n="tu_li2">Developed Shopify frontend using React; integrated Toss Payments widget</li>
+            <li data-i18n="tu_li3">Identity verification using Danal API; social login; Sentry error monitoring</li>
+          </ul>
+        </div>
+        <div class="rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_promo_title">Interactive Promotion Websites</h4>
+          <ul class="mt-3 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="pr_li1">thisisneverthat FW22 promotion website</li>
+            <li data-i18n="pr_li2">ARENA X thisisneverthat collaboration website</li>
+            <li data-i18n="pr_li3">New Balance 550 runner game</li>
+            <li data-i18n="pr_li4">Kata brand website</li>
+          </ul>
+          <ul class="mt-4 flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Three.js</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">WebGL</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:p-8">
+        <div class="mb-4 flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
+          <h3 class="text-lg font-semibold text-[var(--text-primary)] sm:text-xl">UNPeople</h3>
+          <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="un_period">Aug 2021 — Jan 2022 · Full-time · UIUX Team</span>
+        </div>
+        <p class="mb-4 text-sm" data-i18n="un_intro">Developed and published SI-based integrated web systems</p>
+        <ul class="mb-6 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="un_li1">Developed and published web pages using U-CMS</li>
+          <li data-i18n="un_li2">Ensured compliance with web accessibility standards</li>
+          <li data-i18n="un_li3">Built responsive and cross-browser compatible interfaces</li>
+        </ul>
+        <div class="rounded-xl border border-[color:var(--border)] bg-[var(--bg-nested)] p-5">
+          <h4 class="text-base font-semibold text-[var(--text-primary)]" data-i18n="proj_fss_title">Financial Supervisory Service (FSS) Website Renewal</h4>
+          <p class="mt-4 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="lbl_role">Role</p>
+          <p class="mb-3 text-sm text-[var(--text-primary)]" data-i18n="role_publisher">Web Publisher</p>
+          <ul class="ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+            <li data-i18n="fss_li1">Performed web publishing using U-CMS</li>
+            <li data-i18n="fss_li2">Implemented responsive web design</li>
+            <li data-i18n="fss_li3">Ensured web accessibility and cross-browser compatibility</li>
+          </ul>
+        </div>
+      </article>
+    </section>
+
+    <section id="international" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_intl_label">04 — Global</p>
+      <h2 class="mb-6 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="intl_title">International experience</h2>
+      <div class="mb-4 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)]">LAULEA Engineering</h3>
+        <p class="mt-1 font-mono text-xs text-[var(--text-muted)]" data-i18n="laulea_meta">Civil engineering internship · Mar 2019 — Jul 2019</p>
+        <ul class="mt-4 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="lau_li1">Supported design of residential wastewater treatment systems per Hawaii environmental regulations</li>
+          <li data-i18n="lau_li2">Conducted soil filtration experiments and analysis</li>
+          <li data-i18n="lau_li3">Assisted with design validation and technical documentation</li>
+        </ul>
+      </div>
+      <div class="rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)]">
+          <a href="https://www.scalesd.org/" class="transition hover:text-[var(--accent)]" target="_blank" rel="noopener noreferrer">ScaleSD</a>
+        </h3>
+        <p class="mt-1 font-mono text-xs text-[var(--text-muted)]" data-i18n="scale_meta">Research internship · Jan 2019 — Mar 2019</p>
+        <p class="mt-4 text-sm font-semibold text-[var(--text-primary)]" data-i18n="scale_proj">San Diego Dynamic Parking Pricing</p>
+        <ul class="mt-3 ml-4 list-disc space-y-1.5 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n="sc_li1">Collected and analyzed parking and payment data to identify pricing factors</li>
+          <li data-i18n="sc_li2">Built data visualizations and statistical models</li>
+          <li data-i18n="sc_li3">Contributed to real-world pricing strategy optimization to improve revenue and reduce congestion</li>
+        </ul>
+        <ul class="mt-4 flex flex-wrap gap-2">
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">R</li>
+          <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="tech" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_tech_label">05 — Stack</p>
+      <h2 class="mb-6 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="tech_title">Technologies</h2>
+      <div class="grid gap-6 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm sm:grid-cols-2">
+        <div>
+          <h4 class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="cat_frontend">Frontend</h4>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">TypeScript</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">JavaScript</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Next.js</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">React Native</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="cat_backend">Backend / API</h4>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">GraphQL</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Spring Boot</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Java</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="cat_cloud">Cloud / Infra</h4>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">AWS EC2</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Lambda</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">S3</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">CloudFront</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="cat_commerce">Commerce</h4>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Shopify</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Hydrogen</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Storefront API</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Admin API</li>
+          </ul>
+        </div>
+        <div class="sm:col-span-2">
+          <h4 class="mb-3 font-mono text-[10px] font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="cat_data">Data / Analytics</h4>
+          <ul class="flex flex-wrap gap-2">
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">Python</li>
+            <li class="rounded-md border border-[color:var(--border)] bg-[var(--bg-chip)] px-2 py-1 font-mono text-[11px] text-[var(--chip-text)]">R</li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-4 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <h4 class="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-[var(--text-muted)]" data-i18n="highlights_title">Highlights</h4>
+        <ul class="ml-4 list-disc space-y-2 text-sm marker:text-[var(--text-faint)]">
+          <li data-i18n-html="hl_1"><strong class="font-medium text-[var(--text-primary)]">Global commerce</strong> — Multi-country Shopify development and migration across the U.S., Japan, Taiwan, Vietnam, and Malaysia</li>
+          <li data-i18n-html="hl_2"><strong class="font-medium text-[var(--text-primary)]">Project leadership</strong> — Coordinated collaboration and timelines across development, design, and client teams</li>
+          <li data-i18n-html="hl_3"><strong class="font-medium text-[var(--text-primary)]">QA automation</strong> — Improved testing efficiency by developing automation systems</li>
+          <li data-i18n-html="hl_4"><strong class="font-medium text-[var(--text-primary)]">Technical communication</strong> — Bridged requirements between technical and business teams</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="education" class="mb-16">
+      <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="sec_edu_label">06 — Education</p>
+      <h2 class="mb-6 text-xl font-semibold tracking-tight text-[var(--text-primary)] sm:text-2xl" data-i18n="edu_title">Education</h2>
+      <div class="mb-4 rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)]" data-i18n="edu_knou_name">Korea National Open University</h3>
+        <p class="mt-2 text-sm leading-relaxed" data-i18n="edu_knou_body">
+          Built a strong foundation in software development and data analysis through Computer Science, and expanded analytical thinking through a double major in Statistics and Data Science.
+        </p>
+        <p class="mt-3 font-mono text-xs text-[var(--text-muted)]" data-i18n="edu_knou_deg">B.S. Computer Science (Major) · B.S. Statistics &amp; Data Science (Double Major)</p>
+        <p class="mt-1 font-mono text-xs text-[var(--text-muted)]" data-i18n="edu_knou_meta">Mar 2022 — Aug 2025 · Graduated · Seoul · GPA 4.20 / 4.5</p>
+      </div>
+      <div class="rounded-2xl border border-[color:var(--border)] bg-[var(--bg-card)] p-6 shadow-[var(--shadow-card)] backdrop-blur-sm">
+        <h3 class="text-lg font-semibold text-[var(--text-primary)]" data-i18n="edu_kookmin_name">Kookmin University</h3>
+        <p class="mt-2 font-mono text-xs text-[var(--text-muted)]" data-i18n="edu_kookmin_deg">B.S. Civil and Environmental Engineering</p>
+        <p class="mt-1 font-mono text-xs text-[var(--text-muted)]" data-i18n="edu_kookmin_meta">Mar 2012 — Feb 2018 · Graduated · Seoul · GPA 3.67 / 4.5</p>
+      </div>
+    </section>
+
+    <footer class="border-t border-[color:var(--border)] pt-10 text-center font-mono text-xs text-[var(--text-muted)] transition-colors duration-300">
+      <p>
+        © Karam Cho · <span class="text-[var(--text-faint)]" data-i18n="footer_stack">HTML + Tailwind CDN</span> ·
+        <a href="mailto:lizchokaram@gmail.com" class="text-[var(--accent)] underline-offset-4 hover:text-[var(--accent-hover)] hover:underline" data-i18n="footer_contact">Contact</a>
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    (function () {
+      var I18N = {
+        en: {
+          nav_aria: "Sections",
+          nav_profile: "Profile",
+          nav_stores: "Stores",
+          nav_work: "Work",
+          nav_tech: "Tech",
+          nav_global: "Global",
+          nav_edu: "Edu",
+          lang_label: "Language",
+          theme_aria: "Toggle color theme",
+          theme_go_dark: "dark",
+          theme_go_light: "light",
+          page_title: "Karam Cho — Shopify Developer",
+          page_desc: "Shopify & React developer. Global e-commerce, migrations, QA automation.",
+          img_alt: "Karam Cho",
+          meta_line: "✨ portfolio v1 · tailwind + vanilla js",
+          hero_role: "Shopify Developer",
+          hero_lead:
+            "Frontend developer focused on global e-commerce, Shopify storefronts, migrations, and QA automation — React, TypeScript, and end-to-end delivery.",
+          hero_exp: "4y 8mo",
+          hero_notion: "Notion ↗",
+          sec_profile_label: "01 — Profile",
+          about_title: "About",
+          profile_p1:
+            "I am a web developer with approximately four years of experience building a wide range of web services and global e-commerce platforms. I specialize in frontend development using React and TypeScript, with a solid understanding of end-to-end systems including API integration, data migration, and cloud infrastructure.",
+          profile_p2:
+            "In Shopify-based global commerce projects, I have taken ownership of frontend development while collaborating closely across cross-functional teams. I developed a QA automation system that streamlined repetitive processes such as UI validation, SEO checks, and accessibility testing, significantly improving overall quality assurance efficiency.",
+          profile_p3:
+            "I have also contributed to multi-country store migrations and new store launches by aligning technical implementation with business requirements, helping enhance service stability and operational efficiency.",
+          sec_stores_label: "02 — Stores",
+          stores_title: "Shopify stores",
+          stores_sub: "Stores I’ve built & customized",
+          sec_work_label: "03 — Work",
+          work_title: "Experience",
+          cx_period: "Jul 2024 — Present · Full-time · Shopify Team",
+          cx_desc:
+            "Led and contributed to Shopify-based global e-commerce for international brands — owning not only frontend but project leadership, client communication, data migration, and QA automation to ensure service stability and delivery quality.",
+          cx_award: "🏆 2025 Concentrix Korea Game Player Award",
+          cx_award_desc:
+            "Top performer representing the Concentrix Korea office — recognized for performance and leadership in global commerce projects.",
+          lbl_key_resp: "Key responsibilities",
+          cx_li1: "Developed and maintained Shopify-based global e-commerce stores",
+          cx_li2: "Executed product, customer, and order data migration using GraphQL",
+          cx_li3: "Designed localized payment, shipping, and membership workflows",
+          cx_li4: "Managed project timelines and facilitated client–dev collaboration",
+          cx_li5: "Enhanced QA processes through automation systems",
+          lbl_tech_stack: "Tech stack",
+          lbl_projects: "Projects",
+          proj_sulwhasoo_title: "Sulwhasoo Japan E-commerce Store Development",
+          proj_sulwhasoo_date: "2026.03 — 2026.05 · Currently ongoing",
+          lbl_role: "Role",
+          role_lead: "Development / Project Lead",
+          lbl_contrib: "Contributions",
+          sw_li1: "Developed Shopify themes and implemented frontend features",
+          sw_li2: "Led project execution and guided team direction",
+          sw_li3: "Supported key technical decision-making",
+          sw_li4: "Translated business requirements into technical solutions",
+          sw_li5: "Ensured code quality through reviews and technical oversight",
+          proj_inni_title: "Innisfree Global Store Migration (JP / TW / VN / MY) to Shopify",
+          proj_inni_date: "2025.08 — 2026.02",
+          lbl_markets: "Target markets",
+          markets_list: "Japan · Taiwan · Vietnam · Malaysia",
+          lbl_key_contrib: "Key contributions",
+          in_li1: "Defined and executed Shopify data migration strategies",
+          in_li2: "Migrated product, customer, and order data using GraphQL",
+          in_li3: "Led frontend development across multiple regional stores",
+          in_li4: "Implemented localized payment and shipping systems",
+          in_li5: "Ensured compliance with regional regulations (e.g., Japan and Taiwan)",
+          in_li6: "Coordinated cross-functional requirements across teams",
+          in_li7: "Improved service stability through continuous enhancements and issue resolution",
+          proj_whoo_title: "LG Beauty THE WHOO US Store Development",
+          proj_whoo_date: "2024.11 — 2025.04",
+          role_shopify_dev: "Shopify Developer",
+          wh_li1: "Implemented Shopify-based frontend features and UI components",
+          wh_li2: "Customized themes and built reusable components",
+          wh_li3: "Collaborated with clients and stakeholders to align requirements",
+          wh_li4: "Improved performance and enhanced UI/UX after launch",
+          wh_li5: "Resolved issues and maintained service stability",
+          proj_qa_title: "Shopify QA Automation System Development",
+          lbl_key_features: "Key features",
+          qa_li1: "Automated desktop and mobile screen capture",
+          qa_li2: "Implemented SEO and accessibility validation (WCAG 2.1)",
+          qa_li3: "Built GTM debugging and DataLayer tracking automation",
+          qa_li4: "Developed scenario-based automated test execution",
+          qa_li5: "Applied AI-based data validation",
+          lbl_achievements: "Achievements",
+          qa_a1: "Reduced QA validation time significantly",
+          qa_a2: "Eliminated repetitive manual testing processes",
+          gen_period: "Sep 2023 — Jul 2024 · Full-time · AAI Team",
+          gen_intro: "Developed an AI data and model management platform",
+          gen_li1: "Developed frontend features for an AI data and model management platform",
+          gen_li2: "Designed scalable data management interfaces",
+          gen_li3: "Built REST APIs using Spring Boot",
+          gen_li4: "Implemented data monitoring and analytics systems",
+          gen_li5: "Developed mobile applications using React Native",
+          proj_clinical_title: "Clinical Interview Voice Data Collection App",
+          proj_clinical_date: "2023.09 — 2024.07",
+          role_fullstack: "Full-stack Developer",
+          lbl_features: "Features",
+          cl_li1: "Large-scale audio file upload system",
+          cl_li2: "File transfer status monitoring",
+          cl_li3: "Data integrity validation",
+          cl_li4: "Implemented local data management using Realm",
+          cl_li5: "Developed background chunked file upload system",
+          cl_li6: "Implemented network error handling and retry logic",
+          cl_li7: "Built server data synchronization system and REST APIs",
+          jk_period: "Feb 2022 — Sep 2023 · Full-time · Digital Team",
+          jk_award: "🏆 2022 JKND Best Player Award",
+          jk_award_desc: "Selected as the top performer across the company",
+          jk_intro: "Developed brand commerce platforms and interactive web experiences",
+          jk_li1: "Developed Shopify-based e-commerce frontends",
+          jk_li2: "Built interactive web experiences using Three.js and WebGL",
+          jk_li3: "Implemented serverless architectures with AWS Lambda",
+          jk_li4: "Established monitoring systems using Sentry",
+          proj_tenui_title: "Tenui Cosmetics E-commerce Platform",
+          proj_tenui_sub: "Headless commerce store built using Shopify Hydrogen",
+          te_li1: "Data management using Shopify Storefront API",
+          te_li2: "Toss Payments integration",
+          te_li3: "Order management via Shopify Admin API",
+          te_li4: "Developed frontend using React and Next.js with Hydrogen",
+          te_li5: "Built return/exchange automation using AWS Lambda",
+          proj_tune_title: "Tune Multi-brand E-commerce Platform",
+          proj_tune_sub: "Multi-brand commerce platform featuring global brands such as Nike and New Balance",
+          tu_li1: "Raffle-based purchasing system, automated payment processing, user identity verification",
+          tu_li2: "Developed Shopify frontend using React; integrated Toss Payments widget",
+          tu_li3: "Identity verification using Danal API; social login; Sentry error monitoring",
+          proj_promo_title: "Interactive Promotion Websites",
+          pr_li1: "thisisneverthat FW22 promotion website",
+          pr_li2: "ARENA X thisisneverthat collaboration website",
+          pr_li3: "New Balance 550 runner game",
+          pr_li4: "Kata brand website",
+          un_period: "Aug 2021 — Jan 2022 · Full-time · UIUX Team",
+          un_intro: "Developed and published SI-based integrated web systems",
+          un_li1: "Developed and published web pages using U-CMS",
+          un_li2: "Ensured compliance with web accessibility standards",
+          un_li3: "Built responsive and cross-browser compatible interfaces",
+          proj_fss_title: "Financial Supervisory Service (FSS) Website Renewal",
+          role_publisher: "Web Publisher",
+          fss_li1: "Performed web publishing using U-CMS",
+          fss_li2: "Implemented responsive web design",
+          fss_li3: "Ensured web accessibility and cross-browser compatibility",
+          sec_intl_label: "04 — Global",
+          intl_title: "International experience",
+          laulea_meta: "Civil engineering internship · Mar 2019 — Jul 2019",
+          lau_li1: "Supported design of residential wastewater treatment systems per Hawaii environmental regulations",
+          lau_li2: "Conducted soil filtration experiments and analysis",
+          lau_li3: "Assisted with design validation and technical documentation",
+          scale_meta: "Research internship · Jan 2019 — Mar 2019",
+          scale_proj: "San Diego Dynamic Parking Pricing",
+          sc_li1: "Collected and analyzed parking and payment data to identify pricing factors",
+          sc_li2: "Built data visualizations and statistical models",
+          sc_li3: "Contributed to real-world pricing strategy optimization to improve revenue and reduce congestion",
+          sec_tech_label: "05 — Stack",
+          tech_title: "Technologies",
+          cat_frontend: "Frontend",
+          cat_backend: "Backend / API",
+          cat_cloud: "Cloud / Infra",
+          cat_commerce: "Commerce",
+          cat_data: "Data / Analytics",
+          highlights_title: "Highlights",
+          hl_1:
+            '<strong class="font-medium text-[var(--text-primary)]">Global commerce</strong> — Multi-country Shopify development and migration across the U.S., Japan, Taiwan, Vietnam, and Malaysia',
+          hl_2:
+            '<strong class="font-medium text-[var(--text-primary)]">Project leadership</strong> — Coordinated collaboration and timelines across development, design, and client teams',
+          hl_3:
+            '<strong class="font-medium text-[var(--text-primary)]">QA automation</strong> — Improved testing efficiency by developing automation systems',
+          hl_4:
+            '<strong class="font-medium text-[var(--text-primary)]">Technical communication</strong> — Bridged requirements between technical and business teams',
+          sec_edu_label: "06 — Education",
+          edu_title: "Education",
+          edu_knou_name: "Korea National Open University",
+          edu_knou_body:
+            "Built a strong foundation in software development and data analysis through Computer Science, and expanded analytical thinking through a double major in Statistics and Data Science.",
+          edu_knou_deg: "B.S. Computer Science (Major) · B.S. Statistics & Data Science (Double Major)",
+          edu_knou_meta: "Mar 2022 — Aug 2025 · Graduated · Seoul · GPA 4.20 / 4.5",
+          edu_kookmin_name: "Kookmin University",
+          edu_kookmin_deg: "B.S. Civil and Environmental Engineering",
+          edu_kookmin_meta: "Mar 2012 — Feb 2018 · Graduated · Seoul · GPA 3.67 / 4.5",
+          footer_stack: "HTML + Tailwind CDN",
+          footer_contact: "Contact",
+        },
+        ko: {
+          nav_aria: "섹션",
+          nav_profile: "프로필",
+          nav_stores: "프로젝트",
+          nav_work: "경력",
+          nav_tech: "기술",
+          nav_global: "해외 경험",
+          nav_edu: "학력",
+          lang_label: "언어",
+          theme_aria: "테마 변경",
+          theme_go_dark: "다크",
+          theme_go_light: "라이트",
+          page_title: "조가람 | Shopify Developer",
+          page_desc: "Shopify 및 React 기반 프론트엔드 개발자. 글로벌 이커머스 구축 및 마이그레이션, QA 자동화 경험 보유.",
+          img_alt: "조가람 프로필 이미지",
+          meta_line: "Portfolio · Shopify · React · TypeScript",
+          hero_role: "Shopify Developer",
+          hero_lead:
+            "Shopify 기반 글로벌 이커머스 구축 및 운영 경험을 보유한 프론트엔드 개발자입니다. React와 TypeScript를 활용한 UI 개발과 데이터 마이그레이션, QA 자동화까지 전반적인 개발 프로세스를 수행합니다.",
+          hero_exp: "경력 4년 8개월",
+          hero_notion: "포트폴리오 보기",
+          sec_profile_label: "01 — 프로필",
+          about_title: "소개",
+          profile_p1:
+            "약 4년간 다양한 웹 서비스 및 글로벌 이커머스 플랫폼을 개발했습니다. React와 TypeScript 기반 프론트엔드 개발에 강점이 있으며, API 연동, 데이터 마이그레이션, 클라우드 인프라에 대한 이해를 보유하고 있습니다.",
+          profile_p2:
+            "Shopify 기반 글로벌 커머스 프로젝트에서 프론트엔드 개발을 주도하고, 다양한 직군과 협업하여 서비스 품질을 개선했습니다. UI 검증, SEO, 접근성 테스트를 자동화하는 QA 시스템을 구축하여 테스트 효율을 향상시켰습니다.",
+          profile_p3:
+            "다국가 스토어 마이그레이션 및 신규 구축 프로젝트에서 비즈니스 요구사항을 기술적으로 구현하며 서비스 안정성과 운영 효율 개선에 기여했습니다.",
+          sec_stores_label: "02 — 프로젝트",
+          stores_title: "주요 Shopify 프로젝트",
+          stores_sub: "구축 및 커스터마이징 참여 프로젝트",
+          sec_work_label: "03 — 경력",
+          work_title: "경력 사항",
+          cx_period: "2024.07 – 현재 | Concentrix Catalyst | Shopify 팀",
+          cx_desc:
+            "글로벌 브랜드 대상 Shopify 기반 이커머스 구축 및 운영 프로젝트 수행. 프론트엔드 개발뿐만 아니라 프로젝트 리드, 클라이언트 커뮤니케이션, 데이터 마이그레이션, QA 자동화를 담당하여 서비스 품질과 안정성을 향상시켰습니다.",
+          cx_award: "2025 Concentrix Korea Game Player Award",
+          cx_award_desc: "글로벌 커머스 프로젝트 수행 성과 및 리더십을 인정받아 우수 성과자로 선정",
+          lbl_key_resp: "주요 업무",
+          cx_li1: "Shopify 기반 글로벌 이커머스 스토어 개발 및 유지보수",
+          cx_li2: "GraphQL 기반 상품·고객·주문 데이터 마이그레이션 수행",
+          cx_li3: "국가별 결제, 배송, 멤버십 정책 설계 및 구현",
+          cx_li4: "프로젝트 일정 관리 및 이해관계자 커뮤니케이션",
+          cx_li5: "QA 자동화 시스템 구축을 통한 테스트 효율 개선",
+          lbl_tech_stack: "기술 스택",
+          lbl_projects: "주요 프로젝트",
+          proj_sulwhasoo_title: "설화수 일본 이커머스 스토어 구축",
+          proj_sulwhasoo_date: "2026.03 – 2026.05 (진행 중)",
+          lbl_role: "역할",
+          role_lead: "개발 및 프로젝트 리드",
+          lbl_contrib: "주요 수행 내용",
+          sw_li1: "Shopify 테마 및 프론트엔드 기능 개발",
+          sw_li2: "프로젝트 일정 및 개발 방향 관리",
+          sw_li3: "기술 의사결정 및 아키텍처 설계 지원",
+          sw_li4: "비즈니스 요구사항을 기술적으로 구현",
+          sw_li5: "코드 리뷰 및 품질 관리 수행",
+          proj_inni_title: "이니스프리 글로벌 스토어 Shopify 마이그레이션",
+          proj_inni_date: "2025.08 – 2026.02",
+          lbl_markets: "대상 국가",
+          markets_list: "일본 · 대만 · 베트남 · 말레이시아",
+          lbl_key_contrib: "주요 기여",
+          in_li1: "Shopify 데이터 마이그레이션 전략 수립 및 실행",
+          in_li2: "GraphQL을 활용한 상품, 고객, 주문 데이터 이전",
+          in_li3: "다국가 스토어 프론트엔드 개발 리드",
+          in_li4: "국가별 결제 및 배송 시스템 구축",
+          in_li5: "현지 규제 대응 및 정책 반영",
+          in_li6: "팀 간 요구사항 조율 및 협업",
+          in_li7: "운영 안정성 향상을 위한 지속적인 개선 수행",
+          proj_whoo_title: "더후 미국 이커머스 스토어 구축",
+          proj_whoo_date: "2024.11 – 2025.04",
+          role_shopify_dev: "Shopify Developer",
+          wh_li1: "Shopify 기반 UI 및 프론트엔드 기능 개발",
+          wh_li2: "테마 커스터마이징 및 컴포넌트 재사용 구조 설계",
+          wh_li3: "클라이언트 및 내부 팀과 요구사항 협의",
+          wh_li4: "런칭 이후 성능 및 UI/UX 개선",
+          wh_li5: "이슈 대응 및 서비스 안정화",
+          proj_qa_title: "Shopify QA 자동화 시스템 개발",
+          lbl_key_features: "주요 기능",
+          qa_li1: "디바이스별 화면 캡처 자동화",
+          qa_li2: "SEO 및 웹 접근성 검증 (WCAG 2.1)",
+          qa_li3: "GTM 및 DataLayer 트래킹 자동화",
+          qa_li4: "시나리오 기반 테스트 자동 실행",
+          qa_li5: "AI 기반 데이터 검증 로직 구현",
+          lbl_achievements: "성과",
+          qa_a1: "QA 검증 시간 단축",
+          qa_a2: "반복 테스트 자동화를 통한 생산성 향상",
+          gen_period: "2023.09 – 2024.07 | Genesis Lab | AAI 팀",
+          gen_intro: "AI 데이터 및 모델 관리 플랫폼 개발",
+          gen_li1: "AI 데이터 관리 플랫폼 프론트엔드 개발",
+          gen_li2: "대규모 데이터 UI 설계 및 구현",
+          gen_li3: "Spring Boot 기반 REST API 개발",
+          gen_li4: "데이터 모니터링 및 분석 시스템 구축",
+          gen_li5: "React Native 기반 모바일 앱 개발",
+          proj_clinical_title: "임상 인터뷰 음성 데이터 수집 앱",
+          proj_clinical_date: "2023.09 – 2024.07",
+          role_fullstack: "풀스택 개발자",
+          lbl_features: "주요 기능",
+          cl_li1: "대용량 오디오 파일 업로드 시스템 구현",
+          cl_li2: "파일 전송 상태 모니터링 기능 개발",
+          cl_li3: "데이터 무결성 검증 로직 구현",
+          cl_li4: "Realm 기반 로컬 데이터 관리",
+          cl_li5: "백그라운드 업로드 및 네트워크 처리",
+          cl_li6: "오류 대응 및 재시도 로직 구현",
+          cl_li7: "서버 데이터 동기화 및 API 개발",
+          jk_period: "2022.02 – 2023.09 | JKND | 디지털 팀",
+          jk_award: "2022 JKND Best Player Award",
+          jk_award_desc: "전사 우수 성과자 선정",
+          jk_intro: "브랜드 커머스 플랫폼 및 인터랙티브 웹 개발",
+          jk_li1: "Shopify 기반 이커머스 프론트엔드 개발",
+          jk_li2: "Three.js 및 WebGL 기반 인터랙티브 콘텐츠 구현",
+          jk_li3: "AWS Lambda 기반 서버리스 아키텍처 구축",
+          jk_li4: "Sentry 기반 에러 모니터링 시스템 구축",
+          proj_tenui_title: "테누이 화장품 이커머스 플랫폼",
+          proj_tenui_sub: "Shopify Hydrogen 기반 헤드리스 커머스",
+          te_li1: "Shopify Storefront API 데이터 관리",
+          te_li2: "토스페이먼츠 연동",
+          te_li3: "Shopify Admin API 주문 관리",
+          te_li4: "React·Next.js·Hydrogen 프론트엔드 개발",
+          te_li5: "AWS Lambda 반품·교환 자동화",
+          proj_tune_title: "튠 멀티브랜드 이커머스 플랫폼",
+          proj_tune_sub: "나이키·뉴발란스 등 글로벌 브랜드 멀티 브랜드 커머스",
+          tu_li1: "래플 구매·자동 결제·본인인증 시스템",
+          tu_li2: "React Shopify 프론트 및 토스페이먼츠 위젯 연동",
+          tu_li3: "다날 API 본인인증, 소셜 로그인, Sentry 모니터링",
+          proj_promo_title: "인터랙티브 프로모션 웹",
+          pr_li1: "thisisneverthat FW22 프로모션 사이트",
+          pr_li2: "ARENA X thisisneverthat 콜라보 사이트",
+          pr_li3: "뉴발란스 550 러너 게임",
+          pr_li4: "Kata 브랜드 사이트",
+          un_period: "2021.08 – 2022.01 | UNPeople | UIUX 팀",
+          un_intro: "SI 기반 웹 시스템 개발 및 퍼블리싱",
+          un_li1: "U-CMS 기반 웹 퍼블리싱",
+          un_li2: "웹 접근성 표준 준수",
+          un_li3: "반응형 및 크로스 브라우징 대응",
+          proj_fss_title: "금융감독원(FSS) 웹사이트 리뉴얼",
+          role_publisher: "웹 퍼블리셔",
+          fss_li1: "U-CMS 퍼블리싱",
+          fss_li2: "반응형 웹 구현",
+          fss_li3: "접근성·크로스 브라우저 대응",
+          sec_intl_label: "04 — 해외 경험",
+          intl_title: "해외 경험",
+          laulea_meta: "토목 인턴 · 2019.03 — 2019.07",
+          lau_li1: "하와이 환경 규정에 맞는 주거용 폐수 처리 설계 지원",
+          lau_li2: "토양 여과 실험·분석",
+          lau_li3: "설계 검증·기술 문서 보조",
+          scale_meta: "연구 인턴 · 2019.01 — 2019.03",
+          scale_proj: "San Diego Dynamic Parking Pricing",
+          sc_li1: "주차·결제 데이터 수집·분석으로 가격 요인 도출",
+          sc_li2: "시각화·통계 모델 구축",
+          sc_li3: "수익·혼잡 완화를 위한 실제 요금 전략 최적화 기여",
+          sec_tech_label: "05 — 기술",
+          tech_title: "기술 스택",
+          cat_frontend: "프론트엔드",
+          cat_backend: "백엔드 / API",
+          cat_cloud: "클라우드 / 인프라",
+          cat_commerce: "커머스",
+          cat_data: "데이터 / 분석",
+          highlights_title: "하이라이트",
+          hl_1:
+            '<strong class="font-medium text-[var(--text-primary)]">글로벌 커머스</strong> — 미국, 일본, 대만, 베트남, 말레이시아 등 다국의 Shopify 개발·마이그레이션',
+          hl_2:
+            '<strong class="font-medium text-[var(--text-primary)]">프로젝트 리드</strong> — 개발·디자인·클라이언트 팀 간 협업 및 일정 조율',
+          hl_3:
+            '<strong class="font-medium text-[var(--text-primary)]">QA 자동화</strong> — 자동화 시스템으로 테스트 효율 개선',
+          hl_4:
+            '<strong class="font-medium text-[var(--text-primary)]">기술 커뮤니케이션</strong> — 비즈니스와 개발 사이 요구사항 연결',
+          sec_edu_label: "06 — 학력",
+          edu_title: "학력",
+          edu_knou_name: "한국방송통신대학교",
+          edu_knou_body:
+            "컴퓨터과학 전공으로 소프트웨어 개발·데이터 분석 기반을 다지고, 통계·데이터사이언스 복수전공으로 분석적 사고를 넓혔습니다.",
+          edu_knou_deg: "컴퓨터과학 학사(주전공) · 통계·데이터사이언스 학사(복수전공)",
+          edu_knou_meta: "2022.03 — 2025.08 · 졸업 · 서울 · 학점 4.20 / 4.5",
+          edu_kookmin_name: "국민대학교",
+          edu_kookmin_deg: "토목환경공학 학사",
+          edu_kookmin_meta: "2012.03 — 2018.02 · 졸업 · 서울 · 학점 3.67 / 4.5",
+          footer_stack: "HTML / Tailwind CSS",
+          footer_contact: "Contact",
+        },
+      };
+
+      function applyI18n(lang) {
+        var t = I18N[lang] || I18N.en;
+        document.documentElement.lang = lang === "ko" ? "ko" : "en";
+        document.querySelectorAll("[data-i18n]").forEach(function (el) {
+          var k = el.getAttribute("data-i18n");
+          if (t[k] !== undefined) el.textContent = t[k];
+        });
+        document.querySelectorAll("[data-i18n-html]").forEach(function (el) {
+          var k = el.getAttribute("data-i18n-html");
+          if (t[k] !== undefined) el.innerHTML = t[k];
+        });
+        document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
+          var k = el.getAttribute("data-i18n-aria");
+          if (t[k] !== undefined) el.setAttribute("aria-label", t[k]);
+        });
+        var nav = document.querySelector("header nav");
+        if (nav && t.nav_aria) nav.setAttribute("aria-label", t.nav_aria);
+        if (t.page_title) document.title = t.page_title;
+        var meta = document.querySelector('meta[name="description"]');
+        if (meta && t.page_desc) meta.setAttribute("content", t.page_desc);
+        var heroImg = document.querySelector('main section img[alt]');
+        if (heroImg && t.img_alt) heroImg.setAttribute("alt", t.img_alt);
+        var sel = document.getElementById("lang-select");
+        if (sel) sel.value = lang === "ko" ? "ko" : "en";
+        try {
+          localStorage.setItem("portfolio-lang", lang === "ko" ? "ko" : "en");
+        } catch (e) {}
+      }
+
+      function initialLang() {
+        try {
+          var s = localStorage.getItem("portfolio-lang");
+          if (s === "ko" || s === "en") return s;
+        } catch (e) {}
+        var h = document.documentElement.lang;
+        if (h === "ko") return "ko";
+        return "en";
+      }
+
+      applyI18n(initialLang());
+
+      var langSelect = document.getElementById("lang-select");
+      if (langSelect) {
+        langSelect.addEventListener("change", function () {
+          applyI18n(this.value);
+        });
+      }
+
+      var btn = document.getElementById("theme-toggle");
+      if (btn) {
+        btn.addEventListener("click", function () {
+          var root = document.documentElement;
+          root.classList.toggle("dark");
+          try {
+            localStorage.setItem("portfolio-theme", root.classList.contains("dark") ? "dark" : "light");
+          } catch (e) {}
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
