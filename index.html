@@ -361,6 +361,7 @@
           <span class="font-mono text-xs text-[var(--text-muted)]">+82-10-4432-0541</span>
           <span class="font-mono text-xs text-[var(--text-muted)]" data-i18n="hero_exp">4y 8mo</span>
           <a href="https://karamcho.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-[var(--text-muted)] underline-offset-4 hover:text-[var(--accent)] hover:underline" data-i18n="hero_site">Portfolio ↗</a>
+          <a href="https://www.loom.com/share/4e554487c69440cc8f5b50d5b67fb769" target="_blank" rel="noopener noreferrer" class="font-mono text-xs text-[var(--text-muted)] underline-offset-4 hover:text-[var(--accent)] hover:underline" data-i18n="hero_loom">Intro video ↗</a>
         </div>
       </div>
     </section>
@@ -377,6 +378,31 @@
         </p>
         <p class="text-sm leading-relaxed" data-i18n="profile_p3">
           I have also contributed to multi-country store migrations and new store launches by aligning technical implementation with business requirements, helping enhance service stability and operational efficiency.
+        </p>
+      </div>
+      <div class="pdf-exclude mt-10">
+        <p class="mb-1 font-mono text-[11px] font-medium uppercase tracking-[0.2em] text-[var(--accent)]" data-i18n="loom_sec_label">Video</p>
+        <h3 class="mb-1 text-lg font-semibold tracking-tight text-[var(--text-primary)]" data-i18n="loom_title">Self-introduction</h3>
+        <p class="mb-4 text-sm text-[var(--text-muted)]" data-i18n="loom_sub">Short intro in English — recorded on Loom.</p>
+        <div class="relative aspect-video w-full overflow-hidden rounded-2xl border border-[color:var(--border)] bg-[var(--bg-nested)] shadow-[var(--shadow-card)]">
+          <iframe
+            data-i18n-title="loom_iframe_title"
+            title="Self-introduction — Loom video"
+            class="absolute inset-0 h-full w-full"
+            src="https://www.loom.com/embed/4e554487c69440cc8f5b50d5b67fb769?hide_owner=true&hide_share=true"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowfullscreen
+            loading="lazy"
+          ></iframe>
+        </div>
+        <p class="mt-3 text-center">
+          <a
+            href="https://www.loom.com/share/4e554487c69440cc8f5b50d5b67fb769"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-mono text-xs text-[var(--accent)] underline-offset-4 hover:text-[var(--accent-hover)] hover:underline"
+            data-i18n="loom_open"
+            >Open in Loom ↗</a>
         </p>
       </div>
     </section>
@@ -816,6 +842,12 @@
             "Frontend developer focused on global e-commerce, Shopify storefronts, migrations, and QA automation — React, TypeScript, and end-to-end delivery.",
           hero_exp: "4y 8mo",
           hero_site: "Portfolio ↗",
+          hero_loom: "Intro video ↗",
+          loom_sec_label: "Video",
+          loom_title: "Self-introduction",
+          loom_sub: "Short intro in English — recorded on Loom.",
+          loom_iframe_title: "Self-introduction — Loom video",
+          loom_open: "Open in Loom ↗",
           sec_profile_label: "01 — Profile",
           about_title: "About",
           profile_p1:
@@ -1006,6 +1038,12 @@
             "Shopify 기반 글로벌 이커머스 구축 및 운영 경험을 보유한 프론트엔드 개발자입니다. React와 TypeScript를 활용한 UI 개발과 데이터 마이그레이션, QA 자동화까지 전반적인 개발 프로세스를 수행합니다.",
           hero_exp: "경력 4년 8개월",
           hero_site: "포트폴리오 사이트 ↗",
+          hero_loom: "자기소개 영상 ↗",
+          loom_sec_label: "영상",
+          loom_title: "자기소개",
+          loom_sub: "영문 자기소개 영상입니다 (Loom).",
+          loom_iframe_title: "자기소개 Loom 영상",
+          loom_open: "Loom에서 열기 ↗",
           sec_profile_label: "01 — 프로필",
           about_title: "소개",
           profile_p1:
@@ -1181,6 +1219,10 @@
         document.querySelectorAll("[data-i18n-aria]").forEach(function (el) {
           var k = el.getAttribute("data-i18n-aria");
           if (t[k] !== undefined) el.setAttribute("aria-label", t[k]);
+        });
+        document.querySelectorAll("[data-i18n-title]").forEach(function (el) {
+          var k = el.getAttribute("data-i18n-title");
+          if (t[k] !== undefined) el.setAttribute("title", t[k]);
         });
         var menuBtnSync = document.getElementById("nav-menu-btn");
         if (menuBtnSync) {
